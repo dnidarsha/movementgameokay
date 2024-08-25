@@ -1,40 +1,51 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using TMPro;
 
 public class GameManagerS : MonoBehaviour
 {
-    // The player's current score
-    private int score = 0;
+    int coinColl = 0;
+    public TextMeshProUGUI scoreText;
+    public TextMeshProUGUI TimerText;
 
-    // Text UI element to display the score
-    public Text scoreText;
+    public GameObject winPannel;
+    public GameObject lossPannel;
 
-    // Singleton instance
-    public static GameManagerS instance;
+    public float timer = 20;
 
-    private void Awake()
+    public void coinAdd()
     {
-        // Singleton pattern to ensure only one GameManager instance exists
-        if (instance == null)
+        coinColl++;
+        scoreText.text = "Coin : " + coinColl;
+    }
+
+    private void Update()
+    {
+        if (timer > 0)
         {
-            instance = this;
+            timer -= Time.deltaTime;
+            TimeSpan timerData = TimeSpan.FromSeconds(timer);
+            TimerText.text = "Timer : " + timerData.Seconds;
+
+            if (coinColl == 6)
+            {
+                winPannel.SetActive(true);
+                Time.timeScale = 0f;
+            }
+
         }
         else
         {
-            Destroy(gameObject);
+
+            lossPannel.SetActive(true);
+            Time.timeScale = 0.2f;
         }
-    }
 
-    // Function to add score
-    public void AddScore(int value)
-    {
-        score += value;
-        UpdateScoreText();
-    }
 
-    // Function to update the score text UI
-    void UpdateScoreText()
-    {
-        scoreText.text = "Score: " + score.ToString();
+
+
     }
 }
